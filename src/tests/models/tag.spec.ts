@@ -11,7 +11,7 @@ describe("TagModel", () => {
   });
 
   it("throws an error when name is empty", () => {
-    expect(() => TagModel()).toThrowError(NAME_ERROR_MESSAGE);
+    expect(() => TagModel("")).toThrowError(NAME_ERROR_MESSAGE);
   });
 
   it("creates tag with custom color", () => {

@@ -3,10 +3,11 @@ import uuidv4 from "uuid/v4";
 
 export const NAME_ERROR_MESSAGE = "Name can't be empty";
 
-const generateColor = color => color || randomColor({ luminosity: "light" });
-const formatName = name => name.trim().toLowerCase();
+const generateColor = (color: string | undefined) =>
+  color || randomColor({ luminosity: "light" });
+const formatName = (name: string) => name.trim().toLowerCase();
 
-const TagModel = function(name, color) {
+const TagModel = function(name: string, color?: string) {
   if (!name) {
     throw NAME_ERROR_MESSAGE;
   }
