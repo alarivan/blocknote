@@ -4,16 +4,26 @@ export interface Tag {
   color: string | string[];
 }
 
+export interface TagUpdate {
+  tag: Tag;
+  values: {
+    name?: string;
+    color?: string | string[];
+  };
+}
+
 export interface TagsState {
-  tags: Tag[];
+  [key: string]: Tag;
 }
 
 export const SET_TAGS = "SET_TAGS";
 export const ADD_TAG = "ADD_TAG";
+export const UPDATE_TAG = "UPDATE_TAG";
+export const DELETE_TAG = "DELETE_TAG";
 
 interface SetTagsAction {
   type: typeof SET_TAGS;
-  payload: Tag[];
+  payload: TagsState;
 }
 
 interface AddTagAction {
@@ -21,4 +31,18 @@ interface AddTagAction {
   payload: Tag;
 }
 
-export type TagsActionTypes = SetTagsAction | AddTagAction;
+interface UpdateTagAction {
+  type: typeof UPDATE_TAG;
+  payload: TagUpdate;
+}
+
+interface DeleteTagAction {
+  type: typeof DELETE_TAG;
+  payload: Tag;
+}
+
+export type TagsActionTypes =
+  | SetTagsAction
+  | AddTagAction
+  | UpdateTagAction
+  | DeleteTagAction;

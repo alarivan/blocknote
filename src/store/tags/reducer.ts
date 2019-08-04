@@ -1,8 +1,13 @@
-import { TagsState, TagsActionTypes, ADD_TAG, SET_TAGS } from "./types";
+import {
+  TagsState,
+  TagsActionTypes,
+  SET_TAGS,
+  ADD_TAG,
+  UPDATE_TAG,
+  DELETE_TAG
+} from "./types";
 
-const initialState: TagsState = {
-  tags: []
-};
+const initialState: TagsState = {};
 
 export default function tagsReducer(
   state = initialState,
@@ -10,13 +15,24 @@ export default function tagsReducer(
 ): TagsState {
   switch (action.type) {
     case SET_TAGS:
-      return {
-        tags: [...action.payload]
-      };
+      return Object.assign({}, action.payload);
+
     case ADD_TAG:
-      return {
-        tags: [...state.tags, action.payload]
-      };
+      return Object.assign({}, state, { [action.payload.id]: action.payload });
+
+    case UPDATE_TAG:
+      return Object.assign({}, state, {
+        [action.payload.tag.id]: Object.assign(
+          {},
+          action.payload.tag,
+          action.payload.values
+        )
+      });
+
+    case DELETE_TAG:
+      const { [action.payload.id]: deleted, ...newState } = state;
+      return newState;
+
     default:
       return state;
   }
