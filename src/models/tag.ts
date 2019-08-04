@@ -1,11 +1,6 @@
 import randomColor from "randomcolor";
 import uuidv4 from "uuid/v4";
-
-export interface Tag {
-  id: string;
-  name: string;
-  color: string | string[];
-}
+import { Tag } from "store/tags/types";
 
 export const NAME_ERROR_MESSAGE = "Name can't be empty";
 
