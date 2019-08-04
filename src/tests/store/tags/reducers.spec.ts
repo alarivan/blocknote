@@ -36,36 +36,6 @@ describe("tags reducer", () => {
     );
   });
 
-  // it("should handle UPDATE_TAG", () => {
-  //   const name = "updated name";
-  //   const tagUpdate = {
-  //     tag,
-  //     values: { name }
-  //   };
-  //   const tagUpdateFake = {
-  //     tag: fakeTag,
-  //     values: { name }
-  //   };
-  //   const updatedTag: Tag = Object.assign({}, tag, { name });
-  //   const updateTagState = {
-  //     [updatedTag.id]: updatedTag
-  //   };
-  //   const initialState = reducer(tags, addTag(tag));
-
-  //   // empty state
-  //   expect(reducer({}, updateTag(tagUpdate))).toEqual(updateTagState);
-
-  //   // state with tag present
-  //   const updatedState = reducer(initialState, updateTag(tagUpdate));
-  //   expect(updatedState).toEqual(
-  //     Object.assign({}, initialState, updateTagState)
-  //   );
-  //   expect(updatedState[updatedTag.id].name).toEqual(name);
-
-  //   // make sure that initial tag is not updated
-  //   expect(tag.name).toBe("tag3");
-  // });
-
   describe("should handle UPDATE_TAG", () => {
     const name = "updated name";
     const tagUpdate = {
@@ -78,12 +48,14 @@ describe("tags reducer", () => {
     };
     const initialState = reducer(tags, addTag(tag));
 
-    it("when state is empty", () => {
-      // empty state
-      expect(reducer({}, updateTag(tagUpdate))).toEqual(updateTagState);
-
+    afterEach(() => {
       // make sure that initial tag is not updated
       expect(tag.name).toBe("tag3");
+      expect(initialState[tag.id].name).toBe("tag3");
+    });
+
+    it("when state is empty", () => {
+      expect(reducer({}, updateTag(tagUpdate))).toEqual(updateTagState);
     });
 
     it("when tag is present", () => {
