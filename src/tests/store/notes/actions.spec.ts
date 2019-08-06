@@ -2,7 +2,7 @@ import * as actions from "store/notes/actions";
 import * as types from "store/notes/types";
 import NoteModel from "models/note";
 
-const note = NoteModel("note body", ["tag1", "tag2"]);
+const note = NoteModel("note body", { tags: ["tag1", "tag2"] });
 describe("notes/actions", () => {
   it("should create an action to set notes", () => {
     const payload = Object.assign({}, { [note.id]: note });

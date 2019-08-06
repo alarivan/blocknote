@@ -9,7 +9,12 @@ const generateColor = (color: string | undefined): string | string[] =>
 
 const formatName = (name: string) => name.trim().toLowerCase();
 
-const TagModel = function(name: string, color?: string): Tag {
+type TagOptional = {
+  color?: string;
+  notes?: string[];
+};
+
+const TagModel = function(name: string, values: TagOptional = {}): Tag {
   if (!name) {
     throw NAME_ERROR_MESSAGE;
   }
@@ -17,7 +22,8 @@ const TagModel = function(name: string, color?: string): Tag {
   return {
     id: uuidv4(),
     name: formatName(name),
-    color: generateColor(color)
+    color: generateColor(values.color),
+    notes: values.notes ? values.notes : []
   };
 };
 

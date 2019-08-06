@@ -16,7 +16,7 @@ describe("TagModel", () => {
 
   it("creates tag with custom color", () => {
     const color = "#000000";
-    const tag = TagModel(tagName, color);
+    const tag = TagModel(tagName, { color });
 
     expect(tag.color).toBe(color);
   });

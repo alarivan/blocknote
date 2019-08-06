@@ -1,10 +1,14 @@
 import uuidv4 from "uuid/v4";
 
-const NoteModel = function(body: string, tags: Array<string> = []) {
+type NoteOptional = {
+  tags?: string[];
+};
+
+const NoteModel = function(body: string, values: NoteOptional = {}) {
   return {
     id: uuidv4(),
     body,
-    tags,
+    tags: values.tags ? values.tags : [],
     created_at: Date.now()
   };
 };

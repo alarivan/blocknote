@@ -12,7 +12,7 @@ describe("NoteModel", () => {
   });
 
   it("creates note with tags", () => {
-    const note = NoteModel(noteBody, ["tag1", "tag2"]);
+    const note = NoteModel(noteBody, { tags: ["tag1", "tag2"] });
 
     expect(note.tags.length).toBe(2);
   });
