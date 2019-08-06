@@ -1,6 +1,8 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import rootReducer from "./reducer";
 import thunk from "redux-thunk";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import tagNotes from "store/middleware/tagsNotes";
 
 declare global {
@@ -12,9 +14,15 @@ declare global {
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(
-  rootReducer,
+const persistConfig = {
+  key: "root",
+  storage
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = createStore(
+  persistedReducer,
   composeEnhancers(applyMiddleware(thunk, tagNotes))
 );
-
-export default store;
+export const persistor = persistStore(store);
