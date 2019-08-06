@@ -1,29 +1,24 @@
 import { addNote, updateNote, deleteNote } from "store/notes/actions";
 import {
-  Note,
   ADD_NOTE,
   UPDATE_NOTE,
   DELETE_NOTE,
   NotesState
 } from "store/notes/types";
-import { Tag, ADD_TAG, DELETE_TAG, TagsState } from "store/tags/types";
+import { ADD_TAG, DELETE_TAG, UPDATE_TAG, TagsState } from "store/tags/types";
 import { addTag, deleteTag } from "store/tags/actions";
 import tagsNotes from "store/middleware/tagsNotes";
 import NoteModel from "models/note";
 import TagModel from "models/tag";
 import configureMockStore from "redux-mock-store";
-import { UPDATE_TAG } from "store/tags/types";
 
 const mockStore = configureMockStore([tagsNotes]);
 
-type ApplyTo = {
-  tag: boolean;
-  note: boolean;
-};
-
 const createStore = (
-  model: ApplyTo = { tag: false, note: true },
-  store: ApplyTo = { tag: true, note: true }
+  modelNote: boolean = true,
+  modelTag: boolean = true,
+  storeNote: boolean = true,
+  storeTag: boolean = true
 ) => {
   const note = NoteModel("tag1");
   const tag = TagModel("note1");
@@ -31,11 +26,15 @@ const createStore = (
   const notesState: NotesState = {};
   const tagsState: TagsState = {};
 
-  if (model.note) note.tags = [tag.id];
-  if (model.tag) tag.notes = [note.id];
+  // adds tag to note
+  if (modelNote) note.tags = [tag.id];
+  // adds note to tag
+  if (modelTag) tag.notes = [note.id];
 
-  if (store.note) notesState[note.id] = note;
-  if (store.tag) tagsState[tag.id] = tag;
+  // adds note to store
+  if (storeNote) notesState[note.id] = note;
+  // adds tag to store
+  if (storeTag) tagsState[tag.id] = tag;
 
   const initialState = mockStore({
     notesState,
@@ -52,7 +51,7 @@ const createStore = (
 describe("tagsNotes", () => {
   describe("Note", () => {
     it("should dispatch UPDATE_TAG on ADD_NOTE when Tag doesn't have note id", () => {
-      const { store, note } = createStore();
+      const { store, note, tag } = createStore(true, false);
 
       store.dispatch(addNote(note));
 
@@ -64,7 +63,7 @@ describe("tagsNotes", () => {
     });
 
     it("should dispatch UPDATE_TAG on UPDATE_NOTE when Tag doesn't have note id", () => {
-      const { store, note, tag } = createStore();
+      const { store, note, tag } = createStore(true, false);
 
       store.dispatch(updateNote({ note, values: { tags: [tag.id] } }));
 
@@ -76,7 +75,7 @@ describe("tagsNotes", () => {
     });
 
     it("shouldn't dispatch UPDATE_TAG on ADD_NOTE when Tag has note id", () => {
-      const { store, note } = createStore({ tag: true, note: true });
+      const { store, note } = createStore();
 
       store.dispatch(addNote(note));
 
@@ -87,7 +86,7 @@ describe("tagsNotes", () => {
     });
 
     it("shouldn't dispatch UPDATE_TAG on UPDATE_NOTE when Tag has note id", () => {
-      const { store, note, tag } = createStore({ tag: true, note: true });
+      const { store, note, tag } = createStore();
 
       store.dispatch(updateNote({ note, values: { tags: [tag.id] } }));
 
@@ -98,10 +97,7 @@ describe("tagsNotes", () => {
     });
 
     it("shouldn't dispatch UPDATE_TAG on UPDATE_NOTE when Tag doesn't exist", () => {
-      const { store, note, tag } = createStore(
-        { tag: true, note: true },
-        { tag: false, note: true }
-      );
+      const { store, note, tag } = createStore(true, true, true, false);
 
       store.dispatch(updateNote({ note, values: { tags: [tag.id] } }));
 
@@ -112,7 +108,7 @@ describe("tagsNotes", () => {
     });
 
     it("should dispatch UPDATE_TAG on DELETE_NOTE when Note has tags", () => {
-      const { store, note } = createStore({ tag: true, note: true });
+      const { store, note } = createStore();
 
       store.dispatch(deleteNote(note));
 
@@ -124,7 +120,7 @@ describe("tagsNotes", () => {
     });
 
     it("shouldn't dispatch UPDATE_TAG on DELETE_NOTE when Note doesn't have tags", () => {
-      const { store, note } = createStore({ tag: true, note: false });
+      const { store, note } = createStore(false);
 
       store.dispatch(deleteNote(note));
 
@@ -135,10 +131,7 @@ describe("tagsNotes", () => {
     });
 
     it("shouldn't dispatch UPDATE_TAG on DELETE_NOTE for Tags that don't exist", () => {
-      const { store, note } = createStore(
-        { tag: true, note: false },
-        { tag: false, note: true }
-      );
+      const { store, note } = createStore(false, true, true, false);
 
       store.dispatch(deleteNote(note));
 
@@ -151,7 +144,7 @@ describe("tagsNotes", () => {
 
   describe("Tag", () => {
     it("should dispatch UPDATE_NOTE on ADD_TAG when Note doesn't have tag id", () => {
-      const { store, tag } = createStore({ tag: true, note: false });
+      const { store, tag } = createStore(false);
 
       store.dispatch(addTag(tag));
 
@@ -163,7 +156,7 @@ describe("tagsNotes", () => {
     });
 
     it("shouldn't dispatch UPDATE_NOTE on ADD_TAG when Note has tag id", () => {
-      const { store, tag } = createStore({ tag: true, note: true });
+      const { store, tag } = createStore();
 
       store.dispatch(addTag(tag));
 
@@ -174,10 +167,7 @@ describe("tagsNotes", () => {
     });
 
     it("shouldn't dispatch UPDATE_NOTE on ADD_TAG when Note doesn't exist", () => {
-      const { store, tag } = createStore(
-        { tag: true, note: true },
-        { tag: true, note: false }
-      );
+      const { store, tag } = createStore(true, true, false, true);
 
       store.dispatch(addTag(tag));
 
@@ -188,7 +178,7 @@ describe("tagsNotes", () => {
     });
 
     it("should dispatch UPDATE_NOTE on DELETE_TAG when Note has tag id", () => {
-      const { store, tag } = createStore({ tag: true, note: true });
+      const { store, tag } = createStore();
 
       store.dispatch(deleteTag(tag));
 
@@ -200,7 +190,7 @@ describe("tagsNotes", () => {
     });
 
     it("shouldn't dispatch UPDATE_NOTE on DELETE_TAG when Note doesn't have tag id", () => {
-      const { store, tag } = createStore({ tag: true, note: false });
+      const { store, tag } = createStore(false);
 
       store.dispatch(deleteTag(tag));
 
@@ -211,10 +201,7 @@ describe("tagsNotes", () => {
     });
 
     it("shouldn't dispatch UPDATE_NOTE on DELETE_TAG when Note doesn't exist", () => {
-      const { store, tag } = createStore(
-        { tag: true, note: true },
-        { tag: true, note: false }
-      );
+      const { store, tag } = createStore(true, true, false, true);
 
       store.dispatch(deleteTag(tag));
 
