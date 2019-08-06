@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import rootReducer from "./reducer";
 import thunk from "redux-thunk";
+import tagNotes from "store/middleware/tagsNotes";
 
 declare global {
   interface Window {
@@ -13,7 +14,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
   rootReducer,
-  composeEnhancers(applyMiddleware(thunk))
+  composeEnhancers(applyMiddleware(thunk, tagNotes))
 );
 
 export default store;
