@@ -44,12 +44,14 @@
     "@types/react": "^16.8.24",
     "@types/react-dom": "^16.8.5",
     "@types/react-router-dom": "^4.3.4",
+    "@types/redux-mock-store": "^1.0.1",
     "cypress": "^3.4.1",
     "eslint-plugin-prettier": "^3.1.0",
     "husky": "^3.0.2",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
-    "redux-devtools": "^3.5.0"
+    "redux-devtools": "^3.5.0",
+    "redux-mock-store": "^1.5.3"
   },
   "husky": {
     "hooks": {
