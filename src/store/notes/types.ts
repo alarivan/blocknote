@@ -1,3 +1,5 @@
+import { EmptyAction } from "store/actions";
+
 export type Note = {
   id: string;
   body: string;
@@ -45,4 +47,5 @@ export type NotesActionTypes =
   | SetNotesAction
   | AddNoteAction
   | UpdateNoteAction
-  | DeleteNoteAction;
+  | DeleteNoteAction
+  | EmptyAction;

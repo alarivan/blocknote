@@ -2,6 +2,7 @@ import { setTags, addTag, updateTag, deleteTag } from "store/tags/actions";
 import { Tag } from "store/tags/types";
 import reducer from "store/tags/reducer";
 import TagModel from "models/tag";
+import { emptyAction } from "store/actions";
 
 const tags = ["tag1", "tag2"].reduce((acc, t) => {
   const tag = TagModel(t);
@@ -12,7 +13,7 @@ const tag = TagModel("tag3");
 const fakeTag = TagModel("fake");
 describe("tags reducer", () => {
   it("should return the initial state", () => {
-    expect(reducer(undefined, setTags({}))).toEqual({});
+    expect(reducer(undefined, emptyAction())).toEqual({});
   });
 
   it("should handle SET_TAGS", () => {

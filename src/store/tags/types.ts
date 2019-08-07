@@ -1,3 +1,5 @@
+import { EmptyAction } from "store/actions";
+
 export type Tag = {
   id: string;
   name: string;
@@ -47,4 +49,5 @@ export type TagsActionTypes =
   | SetTagsAction
   | AddTagAction
   | UpdateTagAction
-  | DeleteTagAction;
+  | DeleteTagAction
+  | EmptyAction;

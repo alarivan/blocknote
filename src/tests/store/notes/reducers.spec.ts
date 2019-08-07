@@ -2,6 +2,7 @@ import { setNotes, addNote, updateNote, deleteNote } from "store/notes/actions";
 import { Note } from "store/notes/types";
 import reducer from "store/notes/reducer";
 import NoteModel from "models/note";
+import { emptyAction } from "store/actions";
 
 const notes = ["note1", "note2"].reduce((acc, n) => {
   const note = NoteModel(n);
@@ -12,7 +13,7 @@ const note = NoteModel("note3");
 const fakeNote = NoteModel("fake");
 describe("notes reducer", () => {
   it("should return the initial state", () => {
-    expect(reducer(undefined, setNotes({}))).toEqual({});
+    expect(reducer(undefined, emptyAction())).toEqual({});
   });
 
   it("should handle SET_NOTES", () => {
