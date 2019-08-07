@@ -24,12 +24,19 @@ function Form(props: NoteFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form data-cy="note-form" onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="body">Title</label>
-        <textarea id="body" value={body} onChange={handleChange}></textarea>
+        <label htmlFor="body">Note Form</label>
+        <textarea
+          data-cy="note-form-input"
+          id="body"
+          value={body}
+          onChange={handleChange}
+        ></textarea>
       </div>
-      <button type="submit">SAVE</button>
+      <button data-cy="note-form-submit" type="submit">
+        SAVE
+      </button>
     </form>
   );
 }

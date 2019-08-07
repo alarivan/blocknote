@@ -13,13 +13,25 @@ type ListProps = {
 
 export const List = (props: ListProps) => {
   return (
-    <ul>
+    <ul data-cy="note-list">
       {props.notes.map((el: Note) => (
-        <li key={el.id}>
+        <li data-cy="note-item" key={el.id}>
           <SimpleView note={el} onClick={() => {}} />
-          <button onClick={() => props.onDeleteClick(el)}>delete</button>
-          <button onClick={() => props.onEditClick(el)}>edit</button>
-          <Link to={`note/${el.id}`}>View</Link>
+          <button
+            data-cy="note-item-delete"
+            onClick={() => props.onDeleteClick(el)}
+          >
+            delete
+          </button>
+          <button
+            data-cy="note-item-edit"
+            onClick={() => props.onEditClick(el)}
+          >
+            edit
+          </button>
+          <Link data-cy="note-item-view" to={`note/${el.id}`}>
+            View
+          </Link>
         </li>
       ))}
     </ul>

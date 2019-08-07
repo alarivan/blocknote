@@ -7,7 +7,9 @@ type NoteProps = {
 };
 
 const SimpleView = (props: NoteProps) => (
-  <div onClick={() => props.onClick()}>{props.note.body}</div>
+  <div data-cy="note-body" onClick={() => props.onClick()}>
+    {props.note.body}
+  </div>
 );
 
 export default SimpleView;
