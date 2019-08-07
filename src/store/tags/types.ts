@@ -4,7 +4,7 @@ export type Tag = {
   id: string;
   name: string;
   color: string | string[];
-  notes?: string[];
+  notes: string[];
 };
 
 export type TagUpdate = {
