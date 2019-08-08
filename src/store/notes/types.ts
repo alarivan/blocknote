@@ -1,15 +1,16 @@
 import { EmptyAction } from "store/actions";
+import { RawDraftContentState } from "draft-js";
 
 export type Note = {
   id: string;
-  body: string;
+  body: RawDraftContentState;
   tags: string[];
 };
 
 export type NoteUpdate = {
   note: Note;
   values: {
-    body?: string;
+    body?: RawDraftContentState;
     tags?: string[];
   };
 };
