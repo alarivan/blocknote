@@ -4,6 +4,8 @@ import {
   ADD_NOTE,
   UPDATE_NOTE,
   DELETE_NOTE,
+  ADD_TAG_TO_NOTE,
+  DELETE_TAG_FROM_NOTE,
   Note,
   NotesState,
   NoteUpdate
@@ -23,4 +25,12 @@ export function updateNote(payload: NoteUpdate): NotesActionTypes {
 
 export function deleteNote(payload: Note): NotesActionTypes {
   return { type: DELETE_NOTE, payload };
+}
+
+export function addTagToNote(note: Note, tagId: string): NotesActionTypes {
+  return { type: ADD_TAG_TO_NOTE, payload: { note, tagId } };
+}
+
+export function deleteTagFromNote(note: Note, tagId: string): NotesActionTypes {
+  return { type: DELETE_TAG_FROM_NOTE, payload: { note, tagId } };
 }

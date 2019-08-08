@@ -1,91 +1,81 @@
 import { Dispatch, MiddlewareAPI, Action } from "redux";
-import { Tag, ADD_TAG, DELETE_TAG } from "store/tags/types";
-import { Note, ADD_NOTE, DELETE_NOTE, UPDATE_NOTE } from "store/notes/types";
+import { ADD_TAG, DELETE_TAG } from "store/tags/types";
+import {
+  ADD_NOTE,
+  DELETE_NOTE,
+  ADD_TAG_TO_NOTE,
+  DELETE_TAG_FROM_NOTE
+} from "store/notes/types";
 import { updateTag } from "store/tags/actions";
 import { updateNote } from "store/notes/actions";
+import { AppState } from "store/reducer";
 
 interface ActionWithPayloadInterface extends Action {
   payload: any;
 }
 
-type relationFactoryType = {
-  type: string;
-  model: any;
-  fromState: string;
-  toState: string;
-  fromField: string;
-  toField: string;
-  updateAction: any;
-};
-
-const updateRelation = (
-  state: any,
-  dispatch: Dispatch,
-  rel: relationFactoryType
-) => {
-  const from = state[rel.fromState][rel.model.id];
-  from[rel.toField].forEach((id: string) => {
-    const to = state[rel.toState][id];
-    if (to && !to[rel.fromField].includes(rel.model.id)) {
-      dispatch(
-        rel.updateAction(to, {
-          [rel.fromField]: to[rel.fromField].concat(from.id)
-        })
-      );
-    }
-  });
-};
-const clearRelation = (
-  state: any,
-  dispatch: Dispatch,
-  rel: relationFactoryType
-) => {
-  rel.model[rel.toField].forEach((id: string) => {
-    const to = state[rel.toState][id];
-    if (to && to[rel.fromField].includes(rel.model.id)) {
-      dispatch(
-        rel.updateAction(to, {
-          [rel.fromField]: to[rel.fromField].filter(
-            (n: string) => n !== rel.model.id
-          )
-        })
-      );
-    }
-  });
-};
-
-const relationFactory = (
-  state: any,
-  dispatch: Dispatch,
-  type: string,
-  model: any,
-  action: any
-) => {
-  if (type === "note") {
-    return action(state, dispatch, {
-      type,
-      model,
-      fromState: "notesState",
-      toState: "tagsState",
-      fromField: "notes",
-      toField: "tags",
-      updateAction(model: Tag, values: any) {
-        return updateTag({ tag: model, values });
-      }
-    });
-  } else if (type === "tag") {
-    return action(state, dispatch, {
-      type,
-      model,
-      fromState: "tagsState",
-      toState: "notesState",
-      fromField: "tags",
-      toField: "notes",
-      updateAction(model: Note, values: any) {
-        return updateNote({ note: model, values });
-      }
-    });
+const fieldUpdaterAdd = (model: any, field: string, id: string) => {
+  if (model && !model[field].includes(id)) {
+    return {
+      [field]: model[field].concat(id)
+    };
   }
+
+  return null;
+};
+const fieldUpdaterDelete = (model: any, field: string, id: string) => {
+  if (model && model[field].includes(id)) {
+    return {
+      [field]: model[field].filter((f: string) => f !== id)
+    };
+  }
+
+  return null;
+};
+
+const updateNoteIds = (
+  state: AppState,
+  dispatch: Dispatch,
+  action: ActionWithPayloadInterface,
+  fieldUpdater: (model: any, field: string, id: string) => any
+) => {
+  const note = state.notesState[action.payload.id];
+  note.tags.forEach(tagId => {
+    const tag = state.tagsState[tagId];
+
+    const update = fieldUpdater(tag, "notes", note.id);
+
+    if (update) dispatch(updateTag({ tag, values: update }));
+  });
+};
+
+const updateTagIds = (
+  state: AppState,
+  dispatch: Dispatch,
+  action: ActionWithPayloadInterface,
+  fieldUpdater: (model: any, field: string, id: string) => any
+) => {
+  const tag = state.tagsState[action.payload.id];
+  tag.notes.forEach(noteId => {
+    const note = state.notesState[noteId];
+
+    const update = fieldUpdater(note, "tags", tag.id);
+
+    if (update) dispatch(updateNote({ note, values: update }));
+  });
+};
+
+const updateNoteId = (
+  state: AppState,
+  dispatch: Dispatch,
+  action: ActionWithPayloadInterface,
+  fieldUpdater: (model: any, field: string, id: string) => any
+) => {
+  const tag = state.tagsState[action.payload.tagId];
+
+  const update = fieldUpdater(tag, "notes", action.payload.note.id);
+
+  if (update) dispatch(updateTag({ tag, values: update }));
 };
 
 export const tagNotesMiddleware = ({ dispatch, getState }: MiddlewareAPI) => (
@@ -96,58 +86,31 @@ export const tagNotesMiddleware = ({ dispatch, getState }: MiddlewareAPI) => (
       next(action);
 
       if (action.payload.tags) {
-        relationFactory(
-          getState(),
-          dispatch,
-          "note",
-          action.payload,
-          updateRelation
-        );
+        updateNoteIds(getState(), dispatch, action, fieldUpdaterAdd);
       }
       break;
-    case UPDATE_NOTE:
+    case ADD_TAG_TO_NOTE:
       next(action);
 
-      if (action.payload.values.tags) {
-        relationFactory(
-          getState(),
-          dispatch,
-          "note",
-          action.payload.note,
-          updateRelation
-        );
-      }
+      updateNoteId(getState(), dispatch, action, fieldUpdaterAdd);
+      break;
+    case DELETE_TAG_FROM_NOTE:
+      next(action);
+
+      updateNoteId(getState(), dispatch, action, fieldUpdaterDelete);
       break;
     case DELETE_NOTE:
-      relationFactory(
-        getState(),
-        dispatch,
-        "note",
-        action.payload,
-        clearRelation
-      );
+      updateNoteIds(getState(), dispatch, action, fieldUpdaterDelete);
 
       next(action);
       break;
     case ADD_TAG:
       next(action);
 
-      relationFactory(
-        getState(),
-        dispatch,
-        "tag",
-        action.payload,
-        updateRelation
-      );
+      updateTagIds(getState(), dispatch, action, fieldUpdaterAdd);
       break;
     case DELETE_TAG:
-      relationFactory(
-        getState(),
-        dispatch,
-        "tag",
-        action.payload,
-        clearRelation
-      );
+      updateTagIds(getState(), dispatch, action, fieldUpdaterDelete);
 
       next(action);
       break;
