@@ -1,63 +1,64 @@
-import React, { Dispatch } from "react";
+import React, { Dispatch, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Note, NotesActionTypes } from "store/notes/types";
-import { updateNote } from "store/notes/actions";
+import { addNote, updateNote } from "store/notes/actions";
 import { Tag, TagsActionTypes } from "store/tags/types";
-import { addTag } from "store/tags/actions";
-import TagModel from "models/tag";
-
-import NoteForm from "components/note/Form";
-import TagForm from "components/tag/Form";
-import TagList from "components/tag/List";
+import NoteModel from "models/note";
+import NoteFormEditor from "components/note/EditorForm";
+import TagEditor from "components/view/TagEditor";
+import { RawDraftContentState } from "react-draft-wysiwyg";
+import { EditorState, convertFromRaw } from "draft-js";
 
 type NoteValues = {
-  body?: string;
+  body?: RawDraftContentState;
   tags?: string[];
 };
 
 type EditorProps = {
-  note: Note;
+  note: Note | null;
   noteTags: Tag[];
-  notes: any;
-  tags: any;
+  tags: Tag[];
+  addNote: (note: Note) => void;
   updateNote: (note: Note, values: NoteValues) => void;
-  addTag: (name: string) => Tag;
+  onAddNote: (note: Note) => void;
 };
 
 const mapDispatchToProps = (
   dispatch: Dispatch<NotesActionTypes | TagsActionTypes>
 ) => ({
+  addNote: (note: Note) => dispatch(addNote(note)),
+
   updateNote: (note: Note, values: NoteValues) =>
-    dispatch(updateNote({ note, values })),
-  addTag: (name: string) => {
-    const tag = TagModel(name);
-    dispatch(addTag(tag));
-    return tag;
-  }
+    dispatch(updateNote({ note, values }))
 });
 
 const Editor = (props: EditorProps) => {
-  const handleSubmitNote = (body: string) =>
-    props.updateNote(props.note, { body });
-  const handleSubmitTag = (name: string) => {
-    const tag = props.addTag(name);
-    props.updateNote(props.note, { tags: [...props.note.tags, tag.id] });
+  const [body, setBody] = useState(EditorState.createEmpty());
+  useEffect(() => {
+    if (props.note) {
+      setBody(EditorState.createWithContent(convertFromRaw(props.note.body)));
+    }
+  }, [props.note]);
+
+  const handleSubmitNote = (body: RawDraftContentState) => {
+    if (props.note) props.updateNote(props.note, { body });
+    else {
+      const note = NoteModel(body);
+      props.addNote(note);
+      props.onAddNote(note);
+    }
   };
 
   return (
-    <>
-      <NoteForm
-        value={props.note.body}
-        onSubmit={body => handleSubmitNote(body)}
-      />
+    <div className="px-2">
+      <NoteFormEditor value={body} onSubmit={body => handleSubmitNote(body)} />
       <hr />
-      <TagForm value={""} onSubmit={name => handleSubmitTag(name)} />
-      <TagList
-        tags={props.noteTags}
-        onDeleteClick={() => {}}
-        onEditClick={() => {}}
+      <TagEditor
+        note={props.note}
+        noteTags={props.noteTags}
+        tags={props.tags}
       />
-    </>
+    </div>
   );
 };
 
