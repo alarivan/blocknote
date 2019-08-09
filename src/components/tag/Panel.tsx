@@ -11,7 +11,7 @@ export const List = (props: PanelProps) => {
     <ul data-cy="tag-panel">
       {props.tags.map((el: Tag) => (
         <li key={el.id}>
-          <SimpleView tag={el} onClick={() => {}} />
+          <SimpleView showNumber={true} tag={el} onClick={() => {}} />
         </li>
       ))}
     </ul>
