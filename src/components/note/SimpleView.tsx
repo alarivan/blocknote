@@ -8,10 +8,7 @@ type NoteProps = {
 };
 
 const SimpleView = (props: NoteProps) => (
-  <div
-    className="px-2 pb-2"
-    data-cy="note-body"
-  >
+  <div className="px-2 pb-2" data-cy="note-body">
     <div
       dangerouslySetInnerHTML={{
         __html: stateToHTML(convertFromRaw(props.note.body))
