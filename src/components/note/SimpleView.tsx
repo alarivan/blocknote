@@ -1,14 +1,22 @@
 import React from "react";
 import { Note } from "store/notes/types";
+import { stateToHTML } from "draft-js-export-html";
+import { convertFromRaw } from "draft-js";
 
 type NoteProps = {
   note: Note;
-  onClick(): void;
 };
 
 const SimpleView = (props: NoteProps) => (
-  <div data-cy="note-body" onClick={() => props.onClick()}>
-    {props.note.body}
+  <div
+    className="px-2 pb-2"
+    data-cy="note-body"
+  >
+    <div
+      dangerouslySetInnerHTML={{
+        __html: stateToHTML(convertFromRaw(props.note.body))
+      }}
+    ></div>
   </div>
 );
 
