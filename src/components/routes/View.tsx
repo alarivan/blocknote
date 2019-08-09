@@ -26,10 +26,10 @@ const ConnectedView = ({ match, notes, tags }: ViewProps) => {
         <div>
           <h2>View</h2>
           <Editor
+            tags={Object.values(tags)}
             note={notes[match.params.id]}
             noteTags={getTagsFromNote(notes, tags, match.params.id)}
-            notes={notes}
-            tags={tags}
+            onAddNote={() => {}}
           />
         </div>
       )}
