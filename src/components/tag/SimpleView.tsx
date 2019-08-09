@@ -3,6 +3,7 @@ import { Tag } from "store/tags/types";
 
 type TagProps = {
   tag: Tag;
+  showNumber: boolean;
   onClick(): void;
 };
 
@@ -16,7 +17,8 @@ const SimpleView = (props: TagProps) => {
       className="border text-xs font-bold rounded-full text-gray-800 px-2 py-1"
       onClick={() => props.onClick()}
     >
-      {props.tag.name}({props.tag.notes.length})
+      {props.tag.name}{" "}
+      {props.showNumber && <span>({props.tag.notes.length})</span>}
     </button>
   );
 };
