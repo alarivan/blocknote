@@ -43,11 +43,8 @@ export const ConnectedView = (props: IndexProps) => {
 
   return (
     <>
-      <List
-        tags={props.tags}
-        onDeleteClick={tag => handleDeleteClick(tag)}
-        onEditClick={tag => handleEditClick(tag)}
-      />
+      <List tags={props.tags} onClick={tag => {}} />
+
       <Form value={formValue} onSubmit={name => handleSubmit(name)} />
     </>
   );
