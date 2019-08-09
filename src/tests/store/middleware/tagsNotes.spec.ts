@@ -20,6 +20,8 @@ import NoteModel from "models/note";
 import TagModel from "models/tag";
 import configureMockStore from "redux-mock-store";
 
+const noteBody = getContentState();
+
 const mockStore = configureMockStore([tagsNotes]);
 
 const createStore = (
@@ -28,7 +30,7 @@ const createStore = (
   storeNote: boolean = true,
   storeTag: boolean = true
 ) => {
-  const note = NoteModel("tag1");
+  const note = NoteModel(noteBody);
   const tag = TagModel("note1");
 
   const notesState: NotesState = {};

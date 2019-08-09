@@ -5,12 +5,12 @@ import NoteModel from "models/note";
 import { emptyAction } from "store/actions";
 
 const notes = ["note1", "note2"].reduce((acc, n) => {
-  const note = NoteModel(n);
+  const note = NoteModel(getContentState(n));
   return Object.assign(acc, { [note.id]: note });
 }, {});
 
-const note = NoteModel("note3");
-const fakeNote = NoteModel("fake");
+const note = NoteModel(getContentState("note3"));
+const fakeNote = NoteModel(getContentState("fake"));
 describe("notes reducer", () => {
   it("should return the initial state", () => {
     expect(reducer(undefined, emptyAction())).toEqual({});
@@ -37,7 +37,7 @@ describe("notes reducer", () => {
   });
 
   describe("should handle UPDATE_NOTE", () => {
-    const body = "updated body";
+    const body = getContentState("updated body");
     const noteUpdate = {
       note,
       values: { body }
@@ -49,8 +49,8 @@ describe("notes reducer", () => {
     const initialState = reducer(notes, addNote(note));
 
     afterEach(() => {
-      expect(note.body).toBe("note3");
-      expect(initialState[note.id].body).toBe("note3");
+      expect(note.body).toEqual(getContentState("note3"));
+      expect(initialState[note.id].body).toEqual(getContentState("note3"));
     });
 
     it("when state is empty", () => {

@@ -2,7 +2,9 @@ import * as actions from "store/notes/actions";
 import * as types from "store/notes/types";
 import NoteModel from "models/note";
 
-const note = NoteModel("note body", { tags: ["tag1", "tag2"] });
+const noteBody = getContentState();
+
+const note = NoteModel(noteBody, { tags: ["tag1", "tag2"] });
 describe("notes/actions", () => {
   it("should create an action to set notes", () => {
     const payload = Object.assign({}, { [note.id]: note });
@@ -33,7 +35,7 @@ describe("notes/actions", () => {
   it("should create an action to update note", () => {
     const payload = {
       note,
-      values: { body: "note body updated" }
+      values: { body: getContentState("note body updated") }
     };
     const expectedAction = {
       type: types.UPDATE_NOTE,

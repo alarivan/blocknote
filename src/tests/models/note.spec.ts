@@ -1,6 +1,6 @@
 import NoteModel from "models/note";
 
-const noteBody = "Test tag";
+const noteBody = getContentState();
 describe("NoteModel", () => {
   it("creates note", () => {
     const note = NoteModel(noteBody);
