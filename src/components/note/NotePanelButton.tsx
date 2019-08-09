@@ -2,13 +2,20 @@ import React from "react";
 
 type NotePanelButtonProps = {
   label: string;
+  className: string;
   onClick(): void;
 };
 
-const NotePanelButton = ({ label, onClick }: NotePanelButtonProps) => (
+const defaultClassNames = "flex-1 py-2 px-2 ";
+
+const NotePanelButton = ({
+  label,
+  onClick,
+  className
+}: NotePanelButtonProps) => (
   <button
     data-cy="note-panel-button"
-    className="flex-1 bg-gray-300 hover:bg-gray-500 py-2 px-2"
+    className={defaultClassNames.concat(className)}
     onClick={() => onClick()}
   >
     {label}

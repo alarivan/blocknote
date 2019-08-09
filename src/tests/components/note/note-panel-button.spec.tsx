@@ -4,6 +4,7 @@ import NotePanelButton from "components/note/NotePanelButton";
 
 const propsData = {
   label: "label",
+  className: "fake",
   onClick: jest.fn()
 };
 
