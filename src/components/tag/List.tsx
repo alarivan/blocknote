@@ -4,21 +4,23 @@ import SimpleView from "./SimpleView";
 
 type ListProps = {
   tags: Tag[];
-  onDeleteClick(tag: Tag): void;
-  onEditClick(tag: Tag): void;
+  onClick(tag: Tag): void;
 };
 
 export const List = (props: ListProps) => {
   return (
-    <ul>
-      {props.tags.map((el: Tag) => (
-        <li key={el.id}>
-          <SimpleView tag={el} onClick={() => {}} />
-          <button onClick={() => props.onDeleteClick(el)}>delete</button>
-          <button onClick={() => props.onEditClick(el)}>edit</button>
-        </li>
+    <div className="flex my-2">
+      {props.tags.map((tag: Tag) => (
+        <SimpleView
+          key={tag.id}
+          tag={tag}
+          showNumber={false}
+          onClick={() => {
+            props.onClick(tag);
+          }}
+        />
       ))}
-    </ul>
+    </div>
   );
 };
 
